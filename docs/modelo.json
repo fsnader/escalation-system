@@ -1,0 +1,49 @@
+// config
+{
+  "maxTries": "number",
+  "intervalInMinutes": "number",
+  "infoBipApiKey": "string"
+}
+
+// "Incident"
+{
+  "Id": "guid",
+  "TaylorId": "string",
+  "Date": "date",
+  "Description": "string",
+  "TeamId": "guid",
+  "IncidentOwner": {
+    "Id": "guid",
+    "Name": "string",
+    "Cellphone": "string",
+    "Email": "string",
+    "SapId": "string"
+  },
+  "Events": "Event[]",
+  "Status": "string"  // open, closed, cancelled
+}
+
+// Event
+{
+  "Id": "guid",
+  "Employee": "Employee",
+  "Date": "datetime",
+  "CallStatus": "string"
+}
+
+// Team
+{
+  "Id": "guid",
+  "Name": "string",
+  "Employees": "Employee[]",
+  "NextTeamId": "guid"
+}
+
+// Employee
+{
+  "Id": "guid",
+  "Name": "string",
+  "Cellphone": "string",
+  "Email": "string",
+  "SapId": "string"
+}
