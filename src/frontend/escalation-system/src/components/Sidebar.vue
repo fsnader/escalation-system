@@ -24,6 +24,7 @@
       <v-list-item
           v-for="item in category.items"
           :key="item.title"
+          :to="item.link"
           link
       >
         <v-list-item-icon>
@@ -47,8 +48,8 @@ export default {
         {
           title: "Cadastros",
           items: [
-            {title: 'Funcionário', icon: 'mdi-account'},
-            {title: 'Time', icon: 'mdi-account-group'},
+            {title: 'Funcionários', icon: 'mdi-account', link: '/funcionarios'},
+            {title: 'Times', icon: 'mdi-account-group', link: '/times'},
           ]
         },
         {
