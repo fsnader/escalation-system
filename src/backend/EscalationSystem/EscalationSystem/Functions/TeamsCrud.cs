@@ -49,5 +49,16 @@ namespace EscalationSystem.Functions
 
             return new OkObjectResult(team);
         }
+
+        [FunctionName("ListAllTeams")]
+        public async Task<IActionResult> ListAllTeamsAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            ILogger logger,
+            CancellationToken cancellationToken)
+        {
+            var teams = await _teamRepository.ListAllAsync(cancellationToken);
+
+            return new OkObjectResult(teams);
+        }
     }
 }
