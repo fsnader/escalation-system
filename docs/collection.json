@@ -1,0 +1,93 @@
+{
+	"info": {
+		"_postman_id": "27127e9b-eee1-4ba2-a7e9-cae14e2f2707",
+		"name": "EscalationSystem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Team",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"fd6721b8-0948-499a-aebd-8fbd648b8cc9\",\r\n    \"name\": \"Pix\",\r\n    \"employees\": [\r\n        {\r\n            \"id\": \"4aab5bb8-1dfa-4a83-bf79-cb87330ff930\",\r\n            \"sapId\" : \"1234\",\r\n            \"name\": \"Rodolfo Leopoldino\",\r\n            \"cellphone\": \"1234\",\r\n            \"email\": \"rodox@pix.com\"\r\n        },\r\n        {\r\n            \"id\": \"637dda13-00cf-4d8b-827d-0eb565318f43\",\r\n            \"sapId\" : \"3241\",\r\n            \"name\": \"Felipe Nader\",\r\n            \"cellphone\": \"1234\",\r\n            \"email\": \"fsnader@pix.com\"\r\n        }\r\n    ],\r\n    \"NexTeamId\": \"376df708-57d7-4cd4-a87f-8bb5facaa097\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7071/api/CreateTeam",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"CreateTeam"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Team",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7071/api/GetTeam?Id=376df708-57d7-4cd4-a87f-8bb5facaa097",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"GetTeam"
+					],
+					"query": [
+						{
+							"key": "Id",
+							"value": "376df708-57d7-4cd4-a87f-8bb5facaa097"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Escalate incident",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"376df708-57d7-4cd4-a87f-8bb5facaa097\",\r\n    \"taylorId\": \"INC1234\",\r\n    \"description\": \"PIX instability\",\r\n    \"dateTime\": \"01/01/0001 00:00:00 +00:00\",\r\n    \"teamId\": \"376df708-57d7-4cd4-a87f-8bb5facaa097\",\r\n    \"incidentOwner\": {\r\n        \"id\": \"637dda13-00cf-4d8b-827d-0eb565318f43\",\r\n        \"sapId\" : \"3241\",\r\n        \"name\": \"Felipe Nader\",\r\n        \"cellphone\": \"1234\",\r\n        \"email\": \"fsnader@pix.com\"\r\n    },\r\n    \"events\": [],\r\n    \"status\": \"Cancelled\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7071/api/EscalateIncident",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"EscalateIncident"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
