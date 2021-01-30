@@ -70,6 +70,8 @@ namespace EscalationSystem.Functions
                     {
                         return;
                     }
+
+                    await context.CreateTimer(context.CurrentUtcDateTime.Add(TimeSpan.FromSeconds(5)), CancellationToken.None);
                 }
 
                 await context.CreateTimer(context.CurrentUtcDateTime.Add(TimeSpan.FromSeconds(5)), CancellationToken.None);

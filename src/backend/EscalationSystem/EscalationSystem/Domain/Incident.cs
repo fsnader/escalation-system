@@ -1,10 +1,11 @@
-﻿using System;
+﻿using EscalationSystem.Repository;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace EscalationSystem.Domain
 {
-    public class Incident
+    public class Incident : IdentifiedEntity
     {
         public Guid Id { get; set; }
         public string TaylorId { get; set; }

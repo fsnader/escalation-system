@@ -12,8 +12,8 @@ namespace EscalationSystem
     {
         public void Configure(IWebJobsBuilder builder)
         {
-            builder.Services.AddSingleton<IRepository<Team>, BaseRepository<Team>>();
-            builder.Services.AddSingleton<IRepository<Incident>, BaseRepository<Incident>>();
+            builder.Services.AddSingleton<IRepository<Team>, MongoRepository<Team>>();
+            builder.Services.AddSingleton<IRepository<Incident>, MongoRepository<Incident>>();
         }
     }
 }

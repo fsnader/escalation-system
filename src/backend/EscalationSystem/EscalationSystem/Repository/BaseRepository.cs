@@ -20,7 +20,7 @@ namespace EscalationSystem.Repository
             return entity;
         }
 
-        public Task DeleteByIdAsync(Guid Id)
+        public Task DeleteByIdAsync(Guid Id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
@@ -28,6 +28,11 @@ namespace EscalationSystem.Repository
         public async Task<T> GetByIdAsync(Guid Id, CancellationToken cancellationToken)
         {
             return new Fixture().Create<T>();
+        }
+
+        public Task<IEnumerable<T>> ListAllAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }
