@@ -185,7 +185,7 @@ export default {
   methods: {
     initialize() {
       this.superiores = ['Devs PIX', 'techlead PIX', 'gerente Squad Pagamento Instantâneos']
-      this.members =[ 'Alberto dev1', 'Bruno dev2','Camila techlead', 'Danilo gerente', 'Eduarda coordenadora', 'Benchimol'     ],
+      this.members =[ 'Alberto dev1', 'Bruno dev2','Caio dev3', 'Denis dev4','Camila techlead', 'Danilo gerente', 'Eduarda coordenadora', 'Benchimol'     ],
       this.desserts = [
         {
           name: 'Devs PIX',

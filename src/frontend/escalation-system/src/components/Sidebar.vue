@@ -50,6 +50,7 @@ export default {
           items: [
             {title: 'Funcionários', icon: 'mdi-account', link: '/funcionarios'},
             {title: 'Times', icon: 'mdi-account-group', link: '/times'},
+            {title: 'Escala de acionamento', icon: 'mdi-calendar-account', link: '/escala-de-acionamento'},
           ]
         },
         {
