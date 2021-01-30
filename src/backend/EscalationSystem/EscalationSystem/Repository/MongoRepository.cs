@@ -33,13 +33,13 @@ namespace EscalationSystem.Repository
 
                     await _mongoDatabase
                         .GetCollection<T>(_collectionName)
-                        .InsertOneAsync(entity, null, cancellationToken);
+                        .InsertOneAsync(entity, cancellationToken: cancellationToken);
                 }
                 else
                 {
                     await _mongoDatabase
                         .GetCollection<T>(_collectionName)
-                        .UpdateOneAsync(e => e.Id == entity.Id, JsonConvert.SerializeObject(entity), null, cancellationToken);
+                        .ReplaceOneAsync(f => f.Id == entity.Id, entity, cancellationToken: cancellationToken);
                 }
 
                 return entity;
