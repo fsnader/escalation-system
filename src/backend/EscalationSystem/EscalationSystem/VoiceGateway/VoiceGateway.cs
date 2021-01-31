@@ -1,5 +1,7 @@
 ﻿using EscalationSystem.Domain;
+using Polly;
 using Refit;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,15 +24,36 @@ namespace EscalationSystem.VoiceGateway
                 return CallStatus.Lost;
 
             var messageId = result.Content?.Messages?.FirstOrDefault()?.MessageId;
-            return await GetCallStatus(messageId, cancellationToken);
+            return await GetCallStatusByPolling(infoBipApi, phoneNumber, messageId, cancellationToken);
         }
 
-        private Task<CallStatus> GetCallStatus(
+        private async Task<CallStatus> GetCallStatusByPolling(
+            IInfoBipApi infobipApi,
+            string messageId,
+            string phoneNumber,
+            CancellationToken cancellationToken)
+        {
+            var policy = Policy.Handle<Exception>()
+                .WaitAndRetryAsync(3, i => TimeSpan.FromMinutes(1));
+
+            return await policy.ExecuteAsync(async () => 
+                await GetCallStatus(infobipApi, phoneNumber, messageId, cancellationToken));
+        }
+
+        private async Task<CallStatus> GetCallStatus(
+            IInfoBipApi infobipApi,
+            string phoneNumber,
             string messageId,
             CancellationToken cancellationToken)
         {
-            // Logica do pooling
-            throw new System.NotImplementedException();
+            var response = await infobipApi.GetLogs(GetAuthorization(phoneNumber), messageId);
+
+            if (!response.IsSuccessStatusCode || response.Content.CallStatus == CallStatus.Calling)
+            {
+                throw new Exception();
+            }
+
+            return response.Content.CallStatus;
         }
 
         private string GetAuthorization(string phoneNumber)

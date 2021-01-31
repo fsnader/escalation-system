@@ -12,6 +12,6 @@ namespace EscalationSystem.VoiceGateway
         Task<ApiResponse<VoiceResponse>> SendVoiceMessage([Header("Authorization")] string authorization, [Body]VoiceRequest body);
 
         [Get("/tts/3/logs")]
-        Task<ApiResponse<LogsResponse>> GetLogs([Query("messageId")] string messageId);
+        Task<ApiResponse<LogsResponse>> GetLogs([Header("Authorization")] string authorization, [Query("messageId")] string messageId);
     }
 }

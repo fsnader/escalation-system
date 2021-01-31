@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using EscalationSystem.Domain;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
 
 namespace EscalationSystem.VoiceGateway
 {
@@ -7,6 +9,14 @@ namespace EscalationSystem.VoiceGateway
     {
         [JsonProperty("results")]
         public Result[] Results { get; set; }
+
+        public CallStatus CallStatus => 
+            Results.FirstOrDefault()?.Error?.Name switch
+            {
+                "VOICE_ANSWERED" => CallStatus.Answered,
+                "VOICE_ANSWERED_MACHINE" => CallStatus.Lost,
+                _ => CallStatus.Calling
+            };
     }
 
     public partial class Result
