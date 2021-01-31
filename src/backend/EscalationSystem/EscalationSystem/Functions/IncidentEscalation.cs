@@ -10,6 +10,7 @@ using EscalationSystem.Utils;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using EscalationSystem.Repository;
 using System.Threading;
+using EscalationSystem.VoiceGateway;
 
 namespace EscalationSystem.Functions
 {
@@ -17,6 +18,7 @@ namespace EscalationSystem.Functions
     {
         private readonly IRepository<Team> _repository;
         private readonly IRepository<Incident> _incidentRepository;
+        private readonly IVoiceGateway _voiceGateway;
         private const int MaxRetry = 3;
 
         private TimeSpan TimeBetweenCalls = TimeSpan.FromSeconds(1);
@@ -24,10 +26,12 @@ namespace EscalationSystem.Functions
 
         public IncidentEscalation(
             IRepository<Team> repository,
-            IRepository<Incident> incidentRepository)
+            IRepository<Incident> incidentRepository,
+            IVoiceGateway voiceGateway)
         {
             _repository = repository;
             _incidentRepository = incidentRepository;
+            _voiceGateway = voiceGateway;
         }
 
         [FunctionName("EscalateIncident")]
@@ -121,8 +125,7 @@ namespace EscalationSystem.Functions
         public async Task<CallStatus> CallEmployee([ActivityTrigger] Employee employee, ILogger logger, CancellationToken cancellationToken)
         {
             logger.LogWarning("Calling employee {name}", employee.Name );
-            // Colocar o pooling aqui para aguardar a mudança de status da ligação
-            return CallStatus.Lost;
+            return await _voiceGateway.CallNumberAsync(employee.Cellphone, employee.Name, cancellationToken);
         }
 
         [FunctionName("SendEmailToEmployee")]

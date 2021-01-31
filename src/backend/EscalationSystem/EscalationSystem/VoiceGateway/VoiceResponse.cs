@@ -11,10 +11,10 @@ namespace EscalationSystem.VoiceGateway
         public string BulkId { get; set; }
 
         [JsonProperty("messages")]
-        public Message[] Messages { get; set; }
+        public ResponseMessage[] Messages { get; set; }
     }
 
-    public class Message
+    public class ResponseMessage
     {
         [JsonProperty("to")]
         public string To { get; set; }

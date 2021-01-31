@@ -1,9 +1,6 @@
 ﻿using EscalationSystem.Domain;
-using Newtonsoft.Json;
 using Refit;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,7 +18,19 @@ namespace EscalationSystem.VoiceGateway
                 GetAuthorization(phoneNumber),
                 payload);
 
-            return CallStatus.Calling;
+            if (!result.IsSuccessStatusCode)
+                return CallStatus.Lost;
+
+            var messageId = result.Content?.Messages?.FirstOrDefault()?.MessageId;
+            return await GetCallStatus(messageId, cancellationToken);
+        }
+
+        private Task<CallStatus> GetCallStatus(
+            string messageId,
+            CancellationToken cancellationToken)
+        {
+            // Logica do pooling
+            throw new System.NotImplementedException();
         }
 
         private string GetAuthorization(string phoneNumber)
@@ -39,7 +48,7 @@ namespace EscalationSystem.VoiceGateway
 
         private string GetVoiceMessage(string name)
         {
-            return $"Central de monitoramento X P. Olá {name}, ocorreu um incidente em produção e precisamos que você atue. Um chamado no Teilor foi atribuído para o seu time. Favor acessar o sistema para maiores informações";
+            return $"Central de monitoramento X P. ., Olá {name}, ocorreu um incidente em produção e precisamos que você atue. Um chamado no Teilor foi atribuído para o seu time. Favor acessar o sistema para maiores informações";
         }
     }
 }
