@@ -6,6 +6,7 @@ Vue.use(VueRouter)
 import Employee from "@/components/Employee";
 import Team from "@/components/Team";
 import EscalationSchedule from '@/components/EscalationSchedule'
+import Incidents from '@/components/Incidents'
 
 const routes = [
     {
@@ -22,6 +23,11 @@ const routes = [
         component: EscalationSchedule,
         name: 'escalationSchedule',
         path: '/escala-de-acionamento'
+    },
+    {
+        component: Incidents,
+        name: 'incidents',
+        path: '/incidentes'
     }
 ]
 

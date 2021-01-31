@@ -56,7 +56,7 @@ export default {
         {
           title: "Acompanhamento",
           items: [
-            {title: 'Incidentes', icon: 'mdi-view-dashboard'},
+            {title: 'Incidentes', icon: 'mdi-view-dashboard', link: '/incidentes'},
           ]
         },
       ],
