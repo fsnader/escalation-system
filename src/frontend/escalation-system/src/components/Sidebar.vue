@@ -3,10 +3,10 @@
     <v-list-item>
       <v-list-item-content>
         <v-list-item-title class="title">
-          Rodolfo Leopoldino
+          Adalberto Oliveira
         </v-list-item-title>
         <v-list-item-subtitle>
-          Desenvolvedor Sr.
+          Analista de incidente Sr.
         </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>

@@ -216,7 +216,7 @@ export default {
 .lost {
   background: #F8CECC !important;
   border: solid 1px #B85450;
-  color: #d0c224 !important;
+  color: #B85450 !important;
 }
 
 .lost .v-icon {
