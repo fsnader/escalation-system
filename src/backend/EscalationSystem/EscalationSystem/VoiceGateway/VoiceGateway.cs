@@ -68,7 +68,7 @@ namespace EscalationSystem.VoiceGateway
 
         private string GetVoiceMessage(string name)
         {
-            return $"Central de monitoramento X P.... ,Olá {name}, ocorreu um incidente em produção e precisamos que você atue. Um chamado no Teilor foi atribuído para o seu time. Favor acessar o sistema para maiores informações";
+            return $"Central de monitoramento X P Investimentos. Olá {name}, ocorreu um incidente em produção e precisamos que você atue. Um chamado no Teilor foi atribuído para o seu time. Favor acessar o sistema para maiores informações";
         }
     }
 }
