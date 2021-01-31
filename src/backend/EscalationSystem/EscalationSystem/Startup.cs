@@ -1,6 +1,7 @@
 ﻿using EscalationSystem;
 using EscalationSystem.Domain;
 using EscalationSystem.Repository;
+using EscalationSystem.VoiceGateway;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +14,9 @@ namespace EscalationSystem
         public void Configure(IWebJobsBuilder builder)
         {
             builder.Services.AddSingleton<IRepository<Team>, MongoRepository<Team>>();
+            builder.Services.AddSingleton<IRepository<Employee>, MongoRepository<Employee>>();
             builder.Services.AddSingleton<IRepository<Incident>, MongoRepository<Incident>>();
+            builder.Services.AddSingleton<IVoiceGateway, VoiceGateway.VoiceGateway>();
         }
     }
 }

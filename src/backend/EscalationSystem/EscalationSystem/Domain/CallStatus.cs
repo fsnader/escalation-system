@@ -8,6 +8,7 @@ namespace EscalationSystem.Domain
     {
         Calling,
         Answered,
-        Lost
+        Lost,
+        EmailSent
     }
 }

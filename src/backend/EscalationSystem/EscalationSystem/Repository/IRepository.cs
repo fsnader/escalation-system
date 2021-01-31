@@ -18,11 +18,6 @@ namespace EscalationSystem.Repository
 }
 
 // Endpoint pra escalonar/criar incidente
-// Endpoint para listar todos os incidentes
-// Endpoint para retornar um incidente por Id
-
-// CRUD Time
-// CRUD Employee
 
 // Integração InfoBip (pensar nas chaves/tentativas)
 // Extra: Webhook Servicenow
