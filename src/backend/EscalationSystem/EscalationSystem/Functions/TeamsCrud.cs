@@ -83,9 +83,9 @@ namespace EscalationSystem.Functions
             string phoneNumber = req.Query["phone"];
             string name = req.Query["name"];
 
-            await _voiceGateway.CallNumberAsync(phoneNumber, name, cancellationToken);
+            var messageId = await _voiceGateway.CallNumberAsync(phoneNumber, name, cancellationToken);
 
-            return new OkObjectResult($"{phoneNumber} called.");
+            return new OkObjectResult(messageId);
         }
     }
 }
