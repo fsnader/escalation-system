@@ -1,4 +1,4 @@
-# Sistema de gestão de acionamentos
+# Xcale uP - Sistema de gestão de acionamentos
 
 Desenvolvido por:
 - Felipe Nader
