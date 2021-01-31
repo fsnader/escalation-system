@@ -13,6 +13,8 @@ namespace EscalationSystem
     {
         public void Configure(IWebJobsBuilder builder)
         {
+            builder.Services.AddLogging();
+
             builder.Services.AddSingleton<IRepository<Team>, MongoRepository<Team>>();
             builder.Services.AddSingleton<IRepository<Employee>, MongoRepository<Employee>>();
             builder.Services.AddSingleton<IRepository<Incident>, MongoRepository<Incident>>();

@@ -33,7 +33,7 @@ namespace EscalationSystem.VoiceGateway
                         Language = "pt-br",
                         SpeechRate = 1,
                         CallTimeout = 130,
-                        Pause = 1,
+                        Pause = 2,
                         MachineDetection = "hangup",
                         DeliveryTimeWindow = new DeliveryTimeWindow
                         {

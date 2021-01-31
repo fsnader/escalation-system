@@ -9,6 +9,8 @@ namespace EscalationSystem.VoiceGateway
 {
     public interface IVoiceGateway
     {
-        public Task<CallStatus> CallNumberAsync(string phoneNumber, string name, CancellationToken cancellationToken);
+        public Task<string> CallNumberAsync(string phoneNumber, string name, CancellationToken cancellationToken);
+
+        public Task<CallStatus> GetCallStatusAsync(string messageId, string phoneNumber, CancellationToken cancellationToken);
     }
 }

@@ -21,8 +21,10 @@ namespace EscalationSystem.Functions
         private readonly IVoiceGateway _voiceGateway;
         private const int MaxRetry = 3;
 
-        private TimeSpan TimeBetweenCalls = TimeSpan.FromSeconds(1);
+        private TimeSpan TimeBetweenCalls = TimeSpan.FromMinutes(5);
 
+        private const int MaxStatusRetries = 3;
+        private TimeSpan TimeBetweenStatusTries = TimeSpan.FromMinutes(1);
 
         public IncidentEscalation(
             IRepository<Team> repository,
@@ -65,7 +67,10 @@ namespace EscalationSystem.Functions
                     for (int currentRetry = 0; currentRetry < MaxRetry; currentRetry++)
                     {
                         await AddIncidentEventAsync(incident, CallStatus.Calling, employee.Name, context, logger);
-                        var status = await context.CallActivityAsync<CallStatus>("CallEmployee", employee);
+                        
+                        var messageId = await context.CallActivityAsync<string>("CallEmployee", employee);
+                        CallStatus status = await GetCallStatus(context, employee, messageId);
+
                         await AddIncidentEventAsync(incident, status, employee.Name, context, logger);
 
                         if (status == CallStatus.Answered)
@@ -89,7 +94,10 @@ namespace EscalationSystem.Functions
             else
             {
                 await AddIncidentEventAsync(incident, CallStatus.Calling, incident.IncidentOwner.Name, context, logger);
-                var status = await context.CallActivityAsync<CallStatus>("CallEmployee", incident.IncidentOwner);
+
+                var employeeCallMessageId = await context.CallActivityAsync<string>("CallEmployee", incident.IncidentOwner);
+                var status = await GetCallStatus(context, incident.IncidentOwner, employeeCallMessageId);
+
                 await AddIncidentEventAsync(incident, status, incident.IncidentOwner.Name, context, logger);
 
                 if (status != CallStatus.Answered)
@@ -101,6 +109,22 @@ namespace EscalationSystem.Functions
                 incident.Status = IncidentStatus.Cancelled;
                 await context.CallActivityAsync("UpdateIncident", incident);
             }
+        }
+
+        private async Task<CallStatus> GetCallStatus(IDurableOrchestrationContext context, Employee employee, string messageId)
+        {
+            CallStatus status = CallStatus.Calling;
+
+            for (int statusTry = 0; statusTry < MaxStatusRetries; statusTry++)
+            {
+                await context.CreateTimer(context.CurrentUtcDateTime.Add(TimeBetweenStatusTries), CancellationToken.None);
+                status = await context.CallActivityAsync<CallStatus>("GetCallStatus", (messageId, employee.Cellphone));
+
+                if (status != CallStatus.Calling) break;
+            }
+
+            if (status == CallStatus.Calling) status = CallStatus.Lost;
+            return status;
         }
 
         private async Task AddIncidentEventAsync(Incident incident, CallStatus status, string employee, IDurableOrchestrationContext context, ILogger logger)
@@ -122,10 +146,22 @@ namespace EscalationSystem.Functions
         }
 
         [FunctionName("CallEmployee")]
-        public async Task<CallStatus> CallEmployee([ActivityTrigger] Employee employee, ILogger logger, CancellationToken cancellationToken)
+        public async Task<string> CallEmployee([ActivityTrigger] Employee employee, ILogger logger, CancellationToken cancellationToken)
         {
             logger.LogWarning("Calling employee {name}", employee.Name );
-            return await _voiceGateway.CallNumberAsync(employee.Cellphone, employee.Name, cancellationToken);
+            var messageId = await _voiceGateway.CallNumberAsync(employee.Cellphone, employee.Name, cancellationToken);
+            logger.LogWarning("Called employee {name} with messageId {messageId}", employee.Name, messageId);
+
+            return messageId;
+        }
+
+        [FunctionName("GetCallStatus")]
+        public async Task<CallStatus> GetCallStatus([ActivityTrigger] IDurableActivityContext inputs, ILogger logger, CancellationToken cancellationToken)
+        {
+            var (messageId, phoneNumber) = inputs.GetInput<(string, string)>();
+
+            logger.LogWarning("Geting status of call id {messageId}", messageId);
+            return await _voiceGateway.GetCallStatusAsync(messageId, phoneNumber, cancellationToken);
         }
 
         [FunctionName("SendEmailToEmployee")]
