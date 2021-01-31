@@ -10,6 +10,7 @@ using EscalationSystem.Utils;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using EscalationSystem.Repository;
 using System.Threading;
+using EscalationSystem.VoiceGateway;
 
 namespace EscalationSystem.Functions
 {
@@ -17,14 +18,20 @@ namespace EscalationSystem.Functions
     {
         private readonly IRepository<Team> _repository;
         private readonly IRepository<Incident> _incidentRepository;
+        private readonly IVoiceGateway _voiceGateway;
         private const int MaxRetry = 3;
+
+        private TimeSpan TimeBetweenCalls = TimeSpan.FromSeconds(1);
+
 
         public IncidentEscalation(
             IRepository<Team> repository,
-            IRepository<Incident> incidentRepository)
+            IRepository<Incident> incidentRepository,
+            IVoiceGateway voiceGateway)
         {
             _repository = repository;
             _incidentRepository = incidentRepository;
+            _voiceGateway = voiceGateway;
         }
 
         [FunctionName("EscalateIncident")]
@@ -33,12 +40,11 @@ namespace EscalationSystem.Functions
             [DurableClient] IDurableOrchestrationClient starter,
             ILogger logger)
         {
-            var incident = await req.DeserializeBodyAsync<Incident>();
+            var receivedIncident = await req.DeserializeBodyAsync<Incident>();
 
+            var incident = await _incidentRepository.CreateOrUpdateAsync(receivedIncident, CancellationToken.None);
             string instanceId = await starter.StartNewAsync("EscalationOrchestrator", null, incident);
-
             logger.LogInformation($"Started orchestration with ID = '{instanceId}'.");
-
             return starter.CreateCheckStatusResponse(req, instanceId);
         }
 
@@ -52,51 +58,60 @@ namespace EscalationSystem.Functions
 
             var team = await context.CallActivityAsync<Team>("GetIncidentTeam", incident.TeamId);
 
-            foreach (var employee in team.Employees)
+            if (team != null)
             {
-                for (int currentRetry = 0; currentRetry < MaxRetry; currentRetry++)
+                foreach (var employee in team?.Employees)
                 {
-                    var status = await context.CallActivityAsync<CallStatus>("CallEmployee", employee);
-
-                    incident.Events.Add(new Event
+                    for (int currentRetry = 0; currentRetry < MaxRetry; currentRetry++)
                     {
-                        Id = Guid.NewGuid(),
-                        Employee = employee.Name,
-                        DateTime = context.CurrentUtcDateTime,
-                        Status = status
-                    });
+                        await AddIncidentEventAsync(incident, CallStatus.Calling, employee.Name, context, logger);
+                        var status = await context.CallActivityAsync<CallStatus>("CallEmployee", employee);
+                        await AddIncidentEventAsync(incident, status, employee.Name, context, logger);
 
-                    if (status == CallStatus.Answered)
-                    {
-                        return;
+                        if (status == CallStatus.Answered)
+                        {
+                            incident.Status = IncidentStatus.Closed;
+                            await context.CallActivityAsync("UpdateIncident", incident);
+                            return;
+                        }
+
+                        await context.CreateTimer(context.CurrentUtcDateTime.Add(TimeBetweenCalls), CancellationToken.None);
                     }
-
-                    await context.CreateTimer(context.CurrentUtcDateTime.Add(TimeSpan.FromSeconds(5)), CancellationToken.None);
                 }
-
-                await context.CreateTimer(context.CurrentUtcDateTime.Add(TimeSpan.FromSeconds(5)), CancellationToken.None);
             }
 
-            if (team.NextTeamId != null)
+            if (team?.NextTeamId != null)
             {
+                logger.LogError("Escalating incident {incidentId} to next team", incident.TaylorId);
                 incident.TeamId = team.NextTeamId;
-                string instanceId = await starter.StartNewAsync("EscalationOrchestrator", null, incident);
+                await starter.StartNewAsync("EscalationOrchestrator", null, incident);
             }
             else
             {
+                await AddIncidentEventAsync(incident, CallStatus.Calling, incident.IncidentOwner.Name, context, logger);
                 var status = await context.CallActivityAsync<CallStatus>("CallEmployee", incident.IncidentOwner);
+                await AddIncidentEventAsync(incident, status, incident.IncidentOwner.Name, context, logger);
 
                 if (status != CallStatus.Answered)
                 {
                     await context.CallActivityAsync("SendEmailToEmployee", incident.IncidentOwner);
+                    await AddIncidentEventAsync(incident, CallStatus.EmailSent, incident.IncidentOwner.Name, context, logger);
                 }
+
+                incident.Status = IncidentStatus.Cancelled;
+                await context.CallActivityAsync("UpdateIncident", incident);
             }
+        }
+
+        private async Task AddIncidentEventAsync(Incident incident, CallStatus status, string employee, IDurableOrchestrationContext context, ILogger logger)
+        {
+            incident.Events.Add(new Event(employee, context.CurrentUtcDateTime, status));
+            await context.CallActivityAsync("UpdateIncident", incident);
         }
 
         [FunctionName("UpdateIncident")]
         public async Task UpdateIncident([ActivityTrigger] Incident incident, ILogger logger, CancellationToken cancellationToken)
         {
-            logger.LogWarning("Updating incident {id}", incident.Id);
             await _incidentRepository.CreateOrUpdateAsync(incident, cancellationToken);
         }
 
@@ -109,9 +124,8 @@ namespace EscalationSystem.Functions
         [FunctionName("CallEmployee")]
         public async Task<CallStatus> CallEmployee([ActivityTrigger] Employee employee, ILogger logger, CancellationToken cancellationToken)
         {
-            logger.LogWarning("Calling employee {name}", employee.Name);
-            // Colocar o pooling aqui para aguardar a mudança de status da ligação
-            return CallStatus.Answered;
+            logger.LogWarning("Calling employee {name}", employee.Name );
+            return await _voiceGateway.CallNumberAsync(employee.Cellphone, employee.Name, cancellationToken);
         }
 
         [FunctionName("SendEmailToEmployee")]

@@ -25,29 +25,22 @@ namespace EscalationSystem.Repository
 
         public async Task<T> CreateOrUpdateAsync(T entity, CancellationToken cancellationToken)
         {
-            try
+            if (entity.Id == default)
             {
-                if (entity.Id == default)
-                {
-                    entity.Id = Guid.NewGuid();
+                entity.Id = Guid.NewGuid();
 
-                    await _mongoDatabase
-                        .GetCollection<T>(_collectionName)
-                        .InsertOneAsync(entity, null, cancellationToken);
-                }
-                else
-                {
-                    await _mongoDatabase
-                        .GetCollection<T>(_collectionName)
-                        .UpdateOneAsync(e => e.Id == entity.Id, JsonConvert.SerializeObject(entity), null, cancellationToken);
-                }
-
-                return entity;
+                await _mongoDatabase
+                    .GetCollection<T>(_collectionName)
+                    .InsertOneAsync(entity, cancellationToken: cancellationToken);
             }
-            catch(Exception ex)
+            else
             {
-                throw;
+                await _mongoDatabase
+                    .GetCollection<T>(_collectionName)
+                    .ReplaceOneAsync(f => f.Id == entity.Id, entity, cancellationToken: cancellationToken);
             }
+
+            return entity;
         }
 
         public async Task DeleteByIdAsync(Guid Id, CancellationToken cancellationToken)
