@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"fd6721b8-0948-499a-aebd-8fbd648b8cc9\",\r\n    \"name\": \"Pix\",\r\n    \"employees\": [\r\n        {\r\n            \"id\": \"4aab5bb8-1dfa-4a83-bf79-cb87330ff930\",\r\n            \"sapId\" : \"1234\",\r\n            \"name\": \"Rodolfo Leopoldino\",\r\n            \"cellphone\": \"1234\",\r\n            \"email\": \"rodox@pix.com\"\r\n        },\r\n        {\r\n            \"id\": \"637dda13-00cf-4d8b-827d-0eb565318f43\",\r\n            \"sapId\" : \"3241\",\r\n            \"name\": \"Felipe Nader\",\r\n            \"cellphone\": \"1234\",\r\n            \"email\": \"fsnader@pix.com\"\r\n        }\r\n    ],\r\n    \"NexTeamId\": \"376df708-57d7-4cd4-a87f-8bb5facaa097\"\r\n}",
+					"raw": "{\r\n    \"id\": \"f7c3694f-2b93-422c-b9ae-9d0132ba2660\",\r\n    \"name\": \"Pix editado\",\r\n    \"employees\": [\r\n        {\r\n            \"id\": \"4aab5bb8-1dfa-4a83-bf79-cb87330ff930\",\r\n            \"sapId\": \"1234\",\r\n            \"name\": \"Rodolfo Leopoldino\",\r\n            \"cellphone\": \"1234\",\r\n            \"email\": \"rodox@pix.com\"\r\n        },\r\n        {\r\n            \"id\": \"637dda13-00cf-4d8b-827d-0eb565318f43\",\r\n            \"sapId\": \"3241\",\r\n            \"name\": \"Felipe Nader\",\r\n            \"cellphone\": \"1234\",\r\n            \"email\": \"fsnader@pix.com\"\r\n        }\r\n    ],\r\n    \"nextTeamId\": \"00000000-0000-0000-0000-000000000000\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -20,7 +20,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:7071/api/CreateTeam",
+					"raw": "http://localhost:7071/api/CreateOrUpdateTeam",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -28,7 +28,7 @@
 					"port": "7071",
 					"path": [
 						"api",
-						"CreateTeam"
+						"CreateOrUpdateTeam"
 					]
 				}
 			},
@@ -67,7 +67,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"376df708-57d7-4cd4-a87f-8bb5facaa097\",\r\n    \"taylorId\": \"INC1234\",\r\n    \"description\": \"PIX instability\",\r\n    \"dateTime\": \"01/01/0001 00:00:00 +00:00\",\r\n    \"teamId\": \"376df708-57d7-4cd4-a87f-8bb5facaa097\",\r\n    \"incidentOwner\": {\r\n        \"id\": \"637dda13-00cf-4d8b-827d-0eb565318f43\",\r\n        \"sapId\" : \"3241\",\r\n        \"name\": \"Felipe Nader\",\r\n        \"cellphone\": \"1234\",\r\n        \"email\": \"fsnader@pix.com\"\r\n    },\r\n    \"events\": [],\r\n    \"status\": \"Cancelled\"\r\n}",
+					"raw": "{\r\n    \"taylorId\": \"INC1234\",\r\n    \"description\": \"PIX instability\",\r\n    \"dateTime\": \"01/01/0001 00:00:00 +00:00\",\r\n    \"teamId\": \"f7c3694f-2b93-422c-b9ae-9d0132ba2660\",\r\n    \"incidentOwner\": {\r\n        \"id\": \"637dda13-00cf-4d8b-827d-0eb565318f43\",\r\n        \"sapId\" : \"3241\",\r\n        \"name\": \"Felipe Nader\",\r\n        \"cellphone\": \"1234\",\r\n        \"email\": \"fsnader@pix.com\"\r\n    },\r\n    \"events\": []\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -84,6 +84,72 @@
 					"path": [
 						"api",
 						"EscalateIncident"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all teams",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7071/api/ListAllTeams",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"ListAllTeams"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all incidents",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7071/api/ListAllIncidents",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"ListAllIncidents"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get incident",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7071/api/GetIncident?id=ec5e0349-0588-460c-93ff-ef30252b0aa7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"GetIncident"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "ec5e0349-0588-460c-93ff-ef30252b0aa7"
+						}
 					]
 				}
 			},
