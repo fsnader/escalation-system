@@ -144,7 +144,7 @@ export default {
   data: () => ({
     info: null,
     interval: undefined,
-    intervalInSeconds: 10 * 1000,
+    intervalInSeconds: 30 * 1000,
     incidentDetail: {
       id: '',
       taylorId: '',
@@ -179,9 +179,11 @@ export default {
       this.incidentDetail = incident;
     },
     updateIncidents() {
-      this.$http
-          .get('http://localhost:7071/api/ListAllIncidents')
-          .then(response => (this.incidents = response.data));
+      if(!this.dialog) {
+        this.$http
+            .get('http://localhost:7071/api/ListAllIncidentsFake')
+            .then(response => (this.incidents = response.data));
+      }
     }
   }
 }
@@ -214,7 +216,7 @@ export default {
 .lost {
   background: #F8CECC !important;
   border: solid 1px #B85450;
-  color: #B85450 !important;
+  color: #d0c224 !important;
 }
 
 .lost .v-icon {
