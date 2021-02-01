@@ -1,5 +1,5 @@
 # Xcale uP - Sistema de gestão de acionamentos
-[Pitch](https://youtu.be/Gf2yYNBt6rA)
+
 Desenvolvido por:
 - Felipe Nader
 - Rodolfo Leopoldino
