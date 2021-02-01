@@ -4,8 +4,8 @@ Desenvolvido por:
 - Felipe Nader
 - Rodolfo Leopoldino
 
-# Prints do Sistema
-TODO
+# Preview do Sistema
+![picture alt](./docs/preview.png)
 
 # Arquitetura da Solução
 ![picture alt](./docs/escalation-system.png)
