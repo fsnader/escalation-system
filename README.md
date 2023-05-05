@@ -1,33 +1,32 @@
-# Xcale uP - Sistema de gestão de acionamentos
+# Xcale uP - Incidents management system
 
-Desenvolvido por:
+Developed by:
 - Felipe Nader
 - Rodolfo Leopoldino
 
-# Preview do Sistema
+# System Preview
 ![picture alt](./docs/preview.gif)
 
-# Arquitetura da Solução
+# Solution's architecture
 ![picture alt](./docs/escalation-system.png)
 
 # Front-end
-SPA desenvolvido em Vue.JS e Vuetify
+A single page application developed using Vue.JS and Vuetify
 
 # Back-end
-Aplicação Serverless desenvolvida em Azure Functions, Azure Durable Functions e MongoDB
+Serverless application, developed using Azure Functions, Azure Durable Functions and MongoDB
 
-## Fluxo de Escalonamento de incidentes
+## Incidents Scaling flow
 ![picture alt](./docs/fluxo_acionamento.png)
 
-## Cadastro de Funcionários
-Azure Functions com triggers HTTP para operações de cadastro e busca de funcionários.
+## Employees CRUD
+HTTP Triggers to create, edit, update and delete employees
 
-## Cadastro de Times
-Azure Functions com triggers HTTP para operações de cadastro e busca de Times. Nesse endpoint é possível cadastrar o time, a lista de membros do time, seus dados de contato e o próximo time que deve ser acionado caso nenhum dos membros desse time esteja disponível.
+## Teams CRUD
+HTTP Triggers to create, edit, update and delete teams. On this endpoint is possible to find a team, list its members, their contact information and the next team that will be called if any of it's team members accept the call.
 
-## Escalamento de Incidentes
-Azure Durable Functions responsáveis por fazer o fluxo de escalonamento dos chamados e acionamento via telefone. Esse fluxo também funciona como o endpoint de cadastro do incidente.
+## Incidents Scaling
+Azure Durable Functions responsible for scheduling calls and triggering via telephone. This flow also serves as the incident registration endpoint.
 
-
-## Acompanhamento de Incidentes
-Azure Functions com triggers HTTP que retornam informações úteis sobre o incidente
+## Incident Tracking
+Azure Functions with HTTP triggers that return useful information about the incident
